@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""a function def mat_mul(mat1, mat2): that performs matrix multiplication"""
+"""a function that performs matrix multiplication"""
 
 
 def mat_mul(mat1, mat2):
-    """a function def mat_mul(mat1, mat2): that performs matrix multiplication"""
+    """a function that performs matrix multiplication"""
     if len(mat1[0]) != len(mat2):
         return None
-    mat = [[0 for _ in range(len(mat2[0]))] for _ in range(len(mat1))]
+    mat = [[0 for _ in range(len(mat2[0]))]for _ in range(len(mat1))]
     for i in range(len(mat1)):
         for j in range(len(mat2[0])):
             for k in range(len(mat2)):
