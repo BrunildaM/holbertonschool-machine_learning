@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import numpy as np
 """a function that performs element-wise addition, subtraction, multiplication, and division"""
 
 
