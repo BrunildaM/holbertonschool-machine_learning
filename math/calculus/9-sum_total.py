@@ -4,6 +4,6 @@
 
 def summation_i_squared(n):
     """a function that calculates the sum of squared numbers"""
-    if isinstance(n, int):
-        return None
-    return int((n*(n+1)*(2*n+1))/6)
+    if type(n) is int:
+        return int((n*(n+1)*(2*n+1))/6)
+    return None
