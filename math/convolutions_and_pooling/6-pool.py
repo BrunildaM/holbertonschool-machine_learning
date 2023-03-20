@@ -24,4 +24,4 @@ def pool(images, kernel_shape, stride, mode='max'):
                     pooled[:, i, j, :] = output
                     j += 1
                 i += 1
-        return pooled
+    return pooled
