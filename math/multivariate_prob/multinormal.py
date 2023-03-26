@@ -19,7 +19,7 @@ class MultiNormal:
 
     def pdf(self, x):
         """
-        public instance method def that calculates the PDF at a data point
+        public instance method def that calculates PDF at a data point
         """
         if not isinstance(x, np.ndarray):
             raise TypeError("x must be a numpy.ndarray")
@@ -30,7 +30,8 @@ class MultiNormal:
         d = self.mean.shape[0]
         det = np.linalg.det(self.cov)
         inv = np.linalg.inv(self.cov)
-        norm_const = 1.0 / (np.power((2*np.pi), float(d)/2) * np.power(det, 1.0/2))
+        norm_const = 1.0 / (np.power((2*np.pi),
+                                     float(d)/2)*np.power(det, 1.0/2))
         x_mu = x - self.mean
-        result = np.power(np.e, -0.5 * np.dot(np.dot(x_mu.T, inv), x_mu))
-        return norm_const * result.flatten()[0]
+        result = np.power(np.e, -0.5*np.dot(np.dot(x_mu.T, inv), x_mu))
+        return norm_const*result.flatten()[0]
