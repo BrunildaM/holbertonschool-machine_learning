@@ -28,7 +28,9 @@ class MultiNormal:
             raise ValueError("x must have the shape ({}, 1)".format(d))
 
         d = self.mean.shape[0]
-        diff = x - self.mean
-        exponent = -0.5 * np.dot(np.dot(diff.T, np.linalg.inv(self.cov)), diff)
-        prefactor = 1 / (np.sqrt((2 * np.pi) ** d * np.linalg.det(self.cov)))
-        return prefactor * np.exp(exponent)
+        det = np.linalg.det(self.cov)
+        inv = np.linalg.inv(self.cov)
+        norm_const = 1.0 / (np.power((2*np.pi), float(d)/2) * np.power(det, 1.0/2))
+        x_mu = x - self.mean
+        result = np.power(np.e, -0.5 * np.dot(np.dot(x_mu.T, inv), x_mu))
+        return norm_const * result.flatten()[0]
