@@ -15,3 +15,19 @@ class MultiNormal:
         self.mean = np.mean(data, axis=1, keepdims=True)
         deviations = data - self.mean
         self.cov = np.dot(deviations, deviations.T) / (data.shape[1] - 1)
+
+
+    def pdf(self, x):
+        """
+        public instance method def that calculates the PDF at a data point
+        """
+        if not isinstance(x, np.ndarray):
+            raise TypeError("x must be a numpy.ndarray")
+        if x.shape != self.mean.shape:
+            raise ValueError(f"x must have the shape ({self.mean.shape[0]}, 1)")
+
+        d = self.mean.shape[0]
+        diff = x - self.mean
+        exponent = -0.5 * np.dot(np.dot(diff.T, np.linalg.inv(self.cov)), diff)
+        prefactor = 1 / (np.sqrt((2 * np.pi) ** d * np.linalg.det(self.cov)))
+        return prefactor * np.exp(exponent)
