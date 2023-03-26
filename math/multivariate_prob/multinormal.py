@@ -16,7 +16,6 @@ class MultiNormal:
         deviations = data - self.mean
         self.cov = np.dot(deviations, deviations.T) / (data.shape[1] - 1)
 
-
     def pdf(self, x):
         """
         public instance method def that calculates PDF at a data point
