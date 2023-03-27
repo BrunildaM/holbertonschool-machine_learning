@@ -19,9 +19,9 @@ greater than or equal to 0')
     if not isinstance(Pr, np.ndarray) or Pr.ndim != 1 or Pr.shape != P.shape:
         raise TypeError('Pr must be a numpy.ndarray with the same shape as P')
     if not (0 <= P).all() or not (P <= 1).all():
-        raise ValueError('All values in P must be in range [0, 1]')
+        raise ValueError('All values in P must be in the range [0, 1]')
     if not (0 <= Pr).all() or not (Pr <= 1).all():
-        raise ValueError('All values in Pr must be in range [0, 1]')
+        raise ValueError('All values in Pr must be in the range [0, 1]')
     if not np.isclose(np.sum(Pr), 1):
         raise ValueError('Pr must sum to 1')
     fact = np.math.factorial
