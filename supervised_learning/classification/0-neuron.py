@@ -6,11 +6,11 @@ import numpy as np
 
 
 class Neuron:
-"""
-A class Neuron that defines a single neuron performing binary classification
-"""
+    """
+    A class Neuron that defines a single neuron performing binary classification
+    """
     def __init__(self, nx):
-    """Class constructor"""
+        """Class constructor"""
         if type(nx) != int:
             raise TypeError("nx must be an integer")
         if nx < 1:
