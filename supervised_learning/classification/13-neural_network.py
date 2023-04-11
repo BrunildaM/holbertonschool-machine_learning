@@ -58,20 +58,19 @@ class NeuralNetwork:
         A = np.where(self.__A2 >= 0.5, 1, 0)
         cost = self.cost(Y, self.__A2)
         return A, cost
-
+    
     def gradient_descent(self, X, Y, A1, A2, alpha=0.05):
         """
         Calculates one pass of gradient descent on the neural network
         """
         m = Y.shape[1]
-        dz2 = A2 - Y
-        dw2 = np.dot(dz2, A1.T) / m
-        db2 = np.sum(dz2, axis=1, keepdims=True) / m
-        dz1 = np.dot(self.__W2.T, dz2) * (A1 * (1 - A1))
-        dw1 = np.dot(dz1, X.T) / m
-        db1 = np.sum(dz1, axis=1, keepdims=True) / m
-
-        self.__W1 -= (alpha * dw1)
-        self.__b1 -= (alpha * db1)
-        self.__W2 -= (alpha * dw2)
-        self.__b2 -= (alpha * db2)
+        dZ2 = A2 - Y
+        dW2 = (1 / m) * np.dot(dZ2, A1.T)
+        db2 = (1 / m) * np.sum(dZ2, axis=1, keepdims=True)
+        dZ1 = np.dot(self.__W2.T, dZ2) * (1 - A1**2)
+        dW1 = (1 / m) * np.dot(dZ1, X.T)
+        db1 = (1 / m) * np.sum(dZ1, axis=1, keepdims=True)
+        self.__W2 -= alpha * dW2
+        self.__b2 -= alpha * db2
+        self.__W1 -= alpha * dW1
+        self.__b1 -= alpha * db1
