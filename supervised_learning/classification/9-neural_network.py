@@ -10,7 +10,7 @@ class NeuralNetwork:
     """
     class that defines a neural network with one hidden layer
     performing binary classification
-    """ 
+    """
     def __init__(self, nx, nodes):
         """ class constructor"""
         if not isinstance(nx, int):
