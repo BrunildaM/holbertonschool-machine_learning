@@ -2,7 +2,6 @@
 """
 class that represents a single neuron performing binary classification
 """
-import matplotlib.pyplot as plt
 import numpy as np
 
 
