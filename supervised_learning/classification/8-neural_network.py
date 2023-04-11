@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
-class that defines a neural network with one hidden layer performing binary classification
+class that defines a neural network with one hidden layer 
+performing binary classification
 """
 import numpy as np
 
 
 class NeuralNetwork:
     """
-    class that defines a neural network with one hidden layer performing binary classification
+    class that defines a neural network with one hidden layer 
+    performing binary classification
     """
     def __init__(self, nx, nodes):
         """ class constructor"""
@@ -19,7 +21,7 @@ class NeuralNetwork:
             raise TypeError('nodes must be an integer')
         if nodes < 1:
             raise ValueError('nodes must be a positive integer')
- 
+
         self.__W1 = np.random.normal(size=(nodes, nx))
         self.__b1 = np.zeros((nodes, 1))
         self.__A1 = 0
