@@ -10,7 +10,7 @@ class DeepNeuralNetwork:
     a class that defines a deep neural network performing binary classification
     """
     def __init__(self, nx, layers):
-      """Class constructor"""
+        """Class constructor"""
         if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
         if nx < 1:
@@ -23,12 +23,12 @@ class DeepNeuralNetwork:
         self.__L = len(layers)
         self.__cache = {}
         self.__weights = {}
-        for i in range(self.__L):
-            if i == 0:
-                self.__weights["W1"] = np.random.randn(layers[i], nx) * np.sqrt(2/nx)
+        for l in range(1, self.__L + 1):
+            if l == 1:
+                self.__weights['W1'] = np.random.randn(layers[0], nx) * np.sqrt(2/nx)
             else:
-                self.__weights["W{}".format(i + 1)] = np.random.randn(layers[i], layers[i-1]) * np.sqrt(2/layers[i-1])
-            self.__weights["b{}".format(i + 1)] = np.zeros((layers[i], 1))
+                self.__weights['W{}'.format(l)] = np.random.randn(layers[l-1], layers[l-2]) * np.sqrt(2/layers[l-2])
+            self.__weights['b{}'.format(l)] = np.zeros((layers[l-1], 1))
     
     @property
     def L(self):
