@@ -28,7 +28,8 @@ class DeepNeuralNetwork:
                 raise TypeError("layers must be a list of positive integers")
 
             weights["b{}".format(index)] = np.zeros((layer, 1))
-            weights["W{}".format(index)] = (np.random.randn(layer, previous) * np.sqrt(2 / previous))
+            weights["W{}".format(index)] = (np.random.randn(layer, previous)\
+                                            * np.sqrt(2 / previous))
             previous = layer
 
         self.__L = len(layers)
