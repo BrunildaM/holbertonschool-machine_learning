@@ -24,8 +24,9 @@ class DeepNeuralNetwork:
                 self.weights = {"W1": np.random.randn(n, nx) * np.sqrt(2 / nx),
                                 "b1": np.zeros((n, 1))}
             else:
-                self.weights["W{}".format(i + 1)] = np.random.randn(n, layers[i - 1])\
-                                                    * np.sqrt(2 / layers[i - 1])
+                self.weights["W{}".format(i + 1)] = \
+                    np.random.randn(n, layers[i - 1]) \
+                    * np.sqrt(2 / layers[i - 1])
                 self.weights["b{}".format(i + 1)] = np.zeros((n, 1))
         self.L = len(layers)
         self.cache = {}
