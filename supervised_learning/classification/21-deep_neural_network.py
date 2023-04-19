@@ -28,7 +28,8 @@ class DeepNeuralNetwork:
                 raise TypeError("layers must be a list of positive integers")
 
             weights["b{}".format(index)] = np.zeros((layer, 1))
-            weights["W{}".format(index)] = (np.random.randn(layer, previous) * np.sqrt(2 / previous))
+            weights["W{}".format(index)] = (np.random.randn(layer, previous)
+                                            * np.sqrt(2 / previous))
             previous = layer
 
         self.__L = len(layers)
@@ -54,7 +55,6 @@ class DeepNeuralNetwork:
         for index in range(self.L):
             W = self.weights["W{}".format(index + 1)]
             b = self.weights["b{}".format(index + 1)]
-
             z = np.matmul(W, self.cache["A{}".format(index)]) + b
             A = 1 / (1 + (np.exp(-z)))
 
@@ -87,7 +87,7 @@ class DeepNeuralNetwork:
             if index == self.L:
                 back["dz{}".format(index)] = (cache["A{}".format(index)] - Y)
             else:
-                dz_prev = back["dz{}".format(index + 1)] 
+                dz_prev = back["dz{}".format(index + 1)]
                 A_current = cache["A{}".format(index)]
                 back["dz{}".format(index)] = (
                     np.matmul(W_prev.transpose(), dz_prev) *
