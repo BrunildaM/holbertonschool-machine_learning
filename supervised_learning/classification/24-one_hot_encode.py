@@ -17,10 +17,3 @@ def one_hot_encode(Y, classes):
     except Exception as e:
         print("Error in one_hot_encode:", str(e))
         return None
-
-Y = [0, 1, 2, 1, 0]
-Y = np.array(Y)
-classes = 3
-
-one_hot = one_hot_encode(Y, classes)
-print(one_hot)
