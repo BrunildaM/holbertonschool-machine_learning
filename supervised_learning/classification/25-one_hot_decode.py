@@ -11,6 +11,5 @@ def one_hot_decode(one_hot):
 
         labels = np.argmax(one_hot, axis=0)
         return labels
-    except Exception as e:
-        print("Error in one_hot_decode:", str(e))
+    except Exception:
         return None
