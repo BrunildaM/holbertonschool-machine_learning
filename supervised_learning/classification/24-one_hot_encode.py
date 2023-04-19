@@ -9,12 +9,10 @@ def one_hot_encode(Y, classes):
         assert isinstance(Y, np.ndarray)
         assert isinstance(classes, int)
         assert len(Y.shape) == 1
-        assert np.all((Y >= 0) & (Y < classes)) # Check that Y contains valid class labels
-
+        assert np.all((Y >= 0) & (Y < classes))
         m = len(Y)
         one_hot = np.zeros((classes, m))
         one_hot[Y, np.arange(m)] = 1
         return one_hot
-    except Exception as e:
-        print("Error in one_hot_encode:", str(e))
+    except:
         return None
