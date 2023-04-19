@@ -10,22 +10,24 @@ class DeepNeuralNetwork:
     Class that defines a deep neural network performing binary classification
     """
     def __init__(self, nx, layers):
-        """Class constructor"""
-        if type(nx) is not int:
+        """class constructor"""
+        if not isinstance(nx, int):
             raise TypeError("nx must be an integer")
         if nx < 1:
             raise ValueError("nx must be a positive integer")
-        if type(layers) is not list or len(layers) == 0:
+        if not isinstance(layers, list) or len(layers) == 0:
             raise TypeError("layers must be a list of positive integers")
-        if not all(map(lambda x: x > 0 and type(x) is int, layers)):
-            raise TypeError("layers must be a list of positive integers")
+        for i, n in enumerate(layers):
+            if not isinstance(n, int) or n < 1:
+                raise TypeError("layers must be a list of positive integers")
+            if i == 0:
+                self.weights = {"W1": np.random.randn(n, nx) * np.sqrt(2 / nx),
+                                "b1": np.zeros((n, 1))}
+            else:
+                self.weights["W{}".format(i + 1)] = np.random.randn(n, layers[i - 1]) * np.sqrt(2 / layers[i - 1])
+                self.weights["b{}".format(i + 1)] = np.zeros((n, 1))
         self.__L = len(layers)
         self.__cache = {}
-        self.__weights = {}
-        for l in range(1, self.__L + 1):
-            self.__weights['W' + str(l)] = np.random.randn(layers[l-1], nx)\
-                                           * np.sqrt(2/nx)
-            self.__weights['b' + str(l)] = np.zeros((layers[l-1], 1))
 
     @property
     def L(self):
