@@ -77,7 +77,7 @@ class DeepNeuralNetwork:
         prediction = np.where(A >= 0.5, 1, 0)
         return (prediction, cost)
 
-   def gradient_descent(self, Y, cache, alpha=0.05):
+    def gradient_descent(self, Y, cache, alpha=0.05):
 
         m = Y.shape[1]
         back = {}
