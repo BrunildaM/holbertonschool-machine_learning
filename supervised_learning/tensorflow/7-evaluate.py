@@ -20,6 +20,7 @@ def evaluate(X, Y, save_path):
         loss = graph.get_tensor_by_name('loss:0')
         accuracy = graph.get_tensor_by_name('accuracy:0')
 
-        y_pred, loss, accuracy = sess.run([y_pred, loss, accuracy], feed_dict={x: X, y: Y})
+        y_pred, loss, accuracy = sess.run([y_pred, loss, accuracy],
+                                          feed_dict={x: X, y: Y})
 
     return y_pred, accuracy, loss
