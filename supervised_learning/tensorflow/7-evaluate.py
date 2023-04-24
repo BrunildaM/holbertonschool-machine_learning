@@ -20,7 +20,7 @@ def evaluate(X, Y, save_path):
         loss = tf.get_collection('loss')[0]
 
         feed_dict = {x: X, y: Y}
-        eval_accuracy, eval_loss, eval_y_pred = sess.run([accuracy, loss, y_pred],
-                                                         feed_dict)
+        eval_accuracy, eval_loss, eval_y_pred = sess.run(
+            [accuracy, loss, y_pred], feed_dict)
 
     return eval_y_pred, eval_accuracy, eval_loss
