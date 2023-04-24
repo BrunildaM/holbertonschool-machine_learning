@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+the function that returns two placeholders, x and y, for the neural network
+"""
 import tensorflow as tf
 
 
