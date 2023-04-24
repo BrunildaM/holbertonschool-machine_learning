@@ -12,8 +12,11 @@ create_train_op = __import__('5-create_train_op').create_train_op
 forward_prop = __import__('2-forward_prop').forward_prop
 
 
-def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations, alpha, iterations, save_path="/tmp/model.ckpt"):
-
+def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations,
+          alpha, iterations, save_path="/tmp/model.ckpt"):
+    """
+    A function  that builds, trains, and saves a neural network classifier
+    """
     tf.set_random_seed(0)
     np.random.seed(0)
 
@@ -45,8 +48,10 @@ def train(X_train, Y_train, X_valid, Y_valid, layer_sizes, activations, alpha, i
         _, cost = sess.run([train_op, loss], feed_dict={x: X_train, y: Y_train})
 
         if i % 100 == 0:
-            train_acc, train_cost = sess.run([accuracy, loss], feed_dict={x: X_train, y: Y_train})
-            valid_acc, valid_cost = sess.run([accuracy, loss], feed_dict={x: X_valid, y: Y_valid})
+            train_acc, train_cost = sess.run([accuracy, loss],
+                                             feed_dict={x: X_train, y: Y_train})
+            valid_acc, valid_cost = sess.run([accuracy, loss],
+                                             feed_dict={x: X_valid, y: Y_valid})
 
             print("After {} iterations:".format(i))
             print("\tTraining Cost: {}".format(train_cost))
