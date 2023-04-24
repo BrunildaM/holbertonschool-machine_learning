@@ -12,16 +12,17 @@ def forward_prop(x, layer_sizes=[], activations=[]):
 
     Arguments:
     x -- placeholder for the input data
-    layer_sizes -- list containing the number of nodes in each layer of the network
-    activations -- list containing the activation functions for each layer of the network
+    layer_sizes list containing the number of nodes in each layer
+    of the network
+    activations list containing the activation functions for each layer
+    of the network
 
     Returns:
     prediction of the network in tensor form
     """
     A = x
-
     for i in range(len(layer_sizes)):
-        A = create_layer(A, layer_sizes[i], activations[i])
-        A = tf.identity(A, name='layer{}'.format(i+1))
-
+        n = layer_sizes[i]
+        activation = activations[i]
+        A = create_layer(A, n, activation, name="layer{}".format(i+1))
     return A
