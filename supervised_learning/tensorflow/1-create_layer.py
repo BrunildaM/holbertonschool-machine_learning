@@ -16,7 +16,7 @@ def create_layer(prev, n, activation):
     tensor output of the layer
     """
     initializer = tf.contrib.layers.\
-    variance_scaling_initializer(mode="FAN_AVG")
+        variance_scaling_initializer(mode="FAN_AVG")
     W = tf.Variable(initializer([prev.shape[1].value, n]), name='W')
     b = tf.Variable(tf.zeros([n]), name='b')
     Z = tf.matmul(prev, W) + b
