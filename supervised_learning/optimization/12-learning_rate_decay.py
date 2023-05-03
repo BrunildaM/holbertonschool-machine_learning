@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-A functon that creates a learning rate decay operation in tensorflow using inverse time decay
+A functon that creates a learning rate decay operation in tensorflow
+using inverse time decay
 """
 import tensorflow as tf
 
