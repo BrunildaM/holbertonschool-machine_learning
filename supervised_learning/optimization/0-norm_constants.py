@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import numpy as np
 """Function that calculates the mean and standard deviation"""
 
