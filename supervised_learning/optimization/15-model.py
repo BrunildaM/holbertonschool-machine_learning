@@ -3,6 +3,7 @@
 A function that builds, trains, and saves a neural network model
 in tensorflow using Adam optimization, mini-batch gradient descent,
 learning rate decay, and batch normalization"""
+import numpy as np
 import tensorflow as tf
 
 
