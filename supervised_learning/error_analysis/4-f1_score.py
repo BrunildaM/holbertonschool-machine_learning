@@ -9,10 +9,13 @@ def f1_score(confusion: np.ndarray) -> List[float]:
     """A function that calculates the F1 score of a confusion
     matrix"""
     classes = confusion.shape[0]
-    f1_scores = np.zeros(classes)
+    f1_scores = []
     for i in range(classes):
+        tp = confusion[i][i]
+        fp = sum(confusion[:, i]) - tp
+        fn = sum(confusion[i, :]) - tp
         p = precision(confusion)[i]
         r = sensitivity(confusion)[i]
         if p + r != 0:
             f1_scores[i] = 2 * (p * r) / (p + r)
-    return f1_scores
+    return f1_scores  
