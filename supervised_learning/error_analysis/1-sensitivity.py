@@ -12,5 +12,6 @@ def sensitivity(confusion):
     for i in range(num_classes):
         true_positives = confusion[i, i]
         false_negatives = np.sum(confusion[i, :]) - true_positives
-        sensitivity_arr[i] = true_positives / (true_positives + false_negatives)
+        sensitivity_arr[i] = true_positives / (true_positives
+                                               + false_negatives)
     return sensitivity_arr
