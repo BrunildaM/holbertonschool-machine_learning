@@ -7,7 +7,8 @@ import numpy as np
 
 def l2_reg_cost(cost, lambtha, weights, L, m):
     """
-    A function that calculates the cost of a neural network with L2 regularization
+    A function that calculates the cost of a neural network
+    with L2 regularization
     """
     l2_norm_squared = 0
     for l in range(1, L+1):
