@@ -1,32 +1,38 @@
 #!/usr/bin/env python3
+"""
+A function  that updates the weights of a neural network with Dropout
+regularization using gradient descent
+"""
 import numpy as np
 
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
+    """
+    A function  that updates the weights of a neural network with Dropout
+    regularization using gradient descent
+    """
     m = Y.shape[1]
-    grads = {}
-    for i in reversed(range(L)):
-        layer = i + 1
-        A = cache["A" + str(layer)]
-        D = cache["D" + str(layer)]
-        if i == 0:
-            A_prev = cache["A0"]
+    dZ = cache['A'+str(L)] - Y
+    
+    for l in reversed(range(1, L+1)):
+        A_prev = cache['A'+str(l-1)]
+        A = cache['A'+str(l)]
+        W = weights['W'+str(l)]
+        b = weights['b'+str(l)]
+
+        if l > 1:
+            D = cache['D'+str(l-1)]
+            dA = np.dot(W.T, dZ) * D / keep_prob
         else:
-            A_prev = cache["A" + str(i)]
-        W = weights["W" + str(layer)]
-        b = weights["b" + str(layer)]
-        if i == L - 1:
-            dZ = A - Y
-            dW = (1 / m) * np.matmul(dZ, A_prev.T)
-            db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
-        else:
-            dA = np.matmul(W.T, dZ)
-            dA *= D
-            dA /= keep_prob
-            dZ = dA * (1 - A ** 2)
-            dW = (1 / m) * np.matmul(dZ, A_prev.T)
-            db = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
-        grads["dW" + str(layer)] = dW
-        grads["db" + str(layer)] = db
-        weights["W" + str(layer)] -= alpha * dW
-        weights["b" + str(layer)] -= alpha * db
+            dA = np.dot(W.T, dZ)
+        
+        dW = np.dot(dZ, A_prev.T) / m
+        db = np.sum(dZ, axis=1, keepdims=True) / m
+        
+        W -= alpha * dW
+        b -= alpha * db
+        
+        dZ = dA * (1 - np.power(A, 2)) # tanh derivative
+    
+    weights['W'+str(l)] = W
+    weights['b'+str(l)] = b
