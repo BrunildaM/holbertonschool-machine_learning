@@ -9,7 +9,7 @@ def l2_reg_cost(cost):
     A function that calculates the cost of a neural network
     with l2 regularization"""
     lambtha = 0.01
-    weights = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)
-    L2_regularization = tf.reduce_sum([tf.nn.l2_loss(weight) for weight in weights])
-    cost = tf.reduce_mean(cost + lambtha * L2_regularization)
-    return cost
+    weights = [v for v in tf.trainable_variables() if 'kernel' in v.name]
+    L2_regularization = tf.reduce_sum([tf.nn.l2_loss(w) for w in weights])
+    regularized_cost = cost + lambtha * L2_regularization
+    return regularized_cost
