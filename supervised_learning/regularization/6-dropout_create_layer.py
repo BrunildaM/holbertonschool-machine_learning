@@ -3,7 +3,6 @@
 A function that creates a layer of a neural network using dropout
 """
 import numpy as np
-import tensorflow as tf
 
 
 def dropout_create_layer(prev, n, activation, keep_prob):
