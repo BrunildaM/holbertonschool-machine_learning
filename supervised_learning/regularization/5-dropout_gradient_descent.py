@@ -4,7 +4,7 @@ A function  that updates the weights of a neural network with Dropout
 regularization using gradient descent
 """
 import numpy as np
-
+  
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
     """
@@ -32,7 +32,10 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
         W -= alpha * dW
         b -= alpha * db
 
-        dZ = dA * (1 - np.power(A, 2))
+        if l == L:
+            dZ = dA
+        else:
+            dZ = np.dot(W, dA) * (1 - np.power(A, 2)) * D / keep_prob
 
-    weights['W' + str(l)] = W
-    weights['b' + str(l)] = b
+    weights['W'+str(l)] = W
+    weights['b'+str(l)] = b
