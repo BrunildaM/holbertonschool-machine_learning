@@ -7,24 +7,10 @@ import numpy as np
 
 def dropout_create_layer(prev, n, activation, keep_prob):
     """
-    A function that creates a layer of a neural network usimg droput
-    """
-    W = np.random.randn(n, prev.shape[0]) * np.sqrt(2 / prev.shape[0])
-    b = np.zeros((n, 1))
-
-    Z = np.dot(W, prev) + b
-
-    if activation == 'sigmoid':
-        A = 1 / (1 + np.exp(-Z))
-    elif activation == 'relu':
-        A = np.maximum(0, Z)
-    elif activation == 'tanh':
-        A = np.tanh(Z)
-    else:
-        raise ValueError("Invalid activation function.")
-
-    D = np.random.rand(A.shape[0], A.shape[1]) < keep_prob
-    A *= D
-    A /= keep_prob
-
-    return A, D
+    A function that creates a layer using dropout"""
+    W = tf.contrib.layers.variance_scaling_initializer(mode="FAN_AVG")
+    l2 = tf.layers.Dropout(keep_prob)
+    model = tf.layers.Dense(units=n, activation=activation,
+                            name="layer", kernel_initializer=W,
+                            kernel_regularizer=l2)
+    return model(prev)
