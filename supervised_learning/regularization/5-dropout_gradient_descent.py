@@ -4,38 +4,24 @@ A function  that updates the weights of a neural network with Dropout
 regularization using gradient descent
 """
 import numpy as np
-  
+
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
     """
-    A function  that updates the weights of a neural network with Dropout
-    regularization using gradient descent
-    """
-    m = Y.shape[1]
-    dZ = cache['A' + str(L)] - Y
-
-    for l in reversed(range(1, L+1)):
-        A_prev = cache['A' + str(l-1)]
-        A = cache['A' + str(l)]
-        W = weights['W' + str(l)]
-        b = weights['b' + str(l)]
-
-        if l > 1:
-            D = cache['D' + str(l-1)]
-            dA = np.dot(W.T, dZ) * D / keep_prob
-        else:
-            dA = np.dot(W.T, dZ)
-
-        dW = np.dot(dZ, A_prev.T) / m
-        db = np.sum(dZ, axis=1, keepdims=True) / m
-
-        W -= alpha * dW
-        b -= alpha * db
-
-        if l == L:
-            dZ = dA
-        else:
-            dZ = np.dot(W, dA) * (1 - np.power(A, 2)) * D / keep_prob
-
-    weights['W'+str(l)] = W
-    weights['b'+str(l)] = b
+    A function that upates the weights of a neural network with Dropout
+    regularization using gradient descent"""
+    A2 = cache["A{}".format(L)]
+    dz = A2 - Y
+    for i in range(L, 0, -1):
+        db = (np.sum(dz, axis=1, keepdims=True) / Y.shape[1])
+        dw = (np.matmul(cache["A{}".format(i - 1)], dz.T) / Y.shape[1])
+        if (i - 1) > 0:
+            dz = np.matmul(weights["W{}".format(
+                i)].T, dz) * (1 - cache["A{}".format(i - 1)]
+                              * cache["A{}".format(i - 1)])
+            dz = dz * cache["D{}".format(i - 1)]
+            dz = dz / keep_prob
+        weights["b{}".format(i)] = weights["b{}".format(
+            i)] - (alpha * db)
+        weights["W{}".format(i)] = weights["W{}".format(
+            i)] - (alpha * dw).T
