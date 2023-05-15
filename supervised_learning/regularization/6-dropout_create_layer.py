@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-"""
-A function that creates a layer of a neural network using dropout
-"""
-import numpy as np
+"""A function taht creates a layer usig dropout"""
+import tensorflow as tf
 
 
 def dropout_create_layer(prev, n, activation, keep_prob):
