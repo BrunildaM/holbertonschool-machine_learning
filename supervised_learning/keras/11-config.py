@@ -13,6 +13,7 @@ def save_config(network, filename):
         f.write(json)
     return None
 
+
 def load_config(filename):
     """A function that loads the configuration"""
     with open(filename, 'r') as f:
