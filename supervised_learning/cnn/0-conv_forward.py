@@ -5,6 +5,8 @@ import numpy as np
 
 
 def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
+    """A function that performs forward propagation over a convolutional
+    layer of a neural network"""
     m, h_prev, w_prev, c_prev = A_prev.shape
     kh, kw, c_prev, c_new = W.shape
     sh, sw = stride
@@ -29,6 +31,8 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
 
     Z = np.zeros((m, out_h, out_w, c_new))
 
+    W_reshaped = W.reshape((1, kh, kw, c_prev, c_new))
+
     for i in range(out_h):
         for j in range(out_w):
             h_start = i * sh
@@ -38,7 +42,8 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
 
             a_slice_prev = A_prev[:, h_start:h_end, w_start:w_end, :]
 
-            Z[:, i, j, :] = np.sum(a_slice_prev * W, axis=(1, 2, 3))
+            Z[:, i, j, :] = np.sum(a_slice_prev * W_reshaped,
+                                   axis=(1, 2, 3, 4))
 
     Z += b
 
