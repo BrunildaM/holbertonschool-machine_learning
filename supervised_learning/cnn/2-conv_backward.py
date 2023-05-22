@@ -29,8 +29,10 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
             a_slice_prev = A_prev[:, h_start:h_end, w_start:w_end, :]
 
             for c in range(c_new):
-                dA_prev[:, h_start:h_end, w_start:w_end, :] += W[:, :, :, c] * dZ[:, i, j, c]
-                dW[:, :, :, c] += np.sum(a_slice_prev * dZ[:, i, j, c][:, None, None, None],
+                dA_prev[:, h_start:h_end, w_start:w_end, :] += W[:, :, :, c] *\
+                dZ[:, i, j, c]
+                dW[:, :, :, c] += np.sum(a_slice_prev *\
+                                         dZ[:, i, j, c][:, None, None, None],
                                          axis=0)
                 db[:, :, :, c] += np.sum(dZ[:, i, j, c], axis=0)
 
@@ -42,6 +44,7 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
         pad_left = pad_w // 2
         pad_right = pad_w - pad_left
 
-        dA_prev = dA_prev[:, pad_top:h_prev - pad_bottom, pad_left:w_prev - pad_right, :]
+        dA_prev = dA_prev[:, pad_top:h_prev - pad_bottom,
+                          pad_left:w_prev - pad_right, :]
 
     return dA_prev, dW, db
