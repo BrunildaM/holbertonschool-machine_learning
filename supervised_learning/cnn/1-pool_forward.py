@@ -13,7 +13,7 @@ def pool_forward(A_prev, kernel_shape, stride=(1, 1), mode='max'):
 
     out_h = int((h_prev - kh) / sh) + 1
     out_w = int((w_prev - kw) / sw) + 1
-    
+
     Z = np.zeros((m, out_h, out_w, c_prev))
 
     for i in range(out_h):
