@@ -16,12 +16,14 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
 
     dA_prev = np.zeros_like(A_prev)
     dW = np.zeros_like(W)
-    db = np.zeros_like(b)
+    db = np.sum(dZ, axis=(0, 1, 2), keepdims=True)
 
     if padding == "same":
         pad_h = int(np.ceil((h_prev * (sh - 1) - sh + kh) / 2))
         pad_w = int(np.ceil((w_prev * (sw - 1) - sw + kw) / 2))
-        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)), mode="constant")
+        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
+                                     (pad_w, pad_w), (0, 0)),
+                            mode="constant")
     else:
         A_prev_pad = A_prev
 
@@ -34,10 +36,14 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
                     horiz_start = w * sw
                     horiz_end = horiz_start + kw
 
-                    dA_prev_pad = A_prev_pad[i, vert_start:vert_end, horiz_start:horiz_end, :]
-                    dW[:, :, :, c] += dA_prev_pad * dZ[i, h, w, c]
-                    dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, :] += W[:, :, :, c] * dZ[i, h, w, c]
-                    db[:, :, :, c] += dZ[i, h, w, c]
+                    dA_prev_pad = dA_prev[i, vert_start:vert_end,
+                                          horiz_start:horiz_end, :]
+                    dW[:, :, :, c] += A_prev_pad[i,
+                                                 vert_start:vert_end,
+                                                 horiz_start:horiz_end,
+                                                 :] * dZ[i, h, w, c]
+                    dA_prev[i, vert_start:vert_end, horiz_start:horiz_end,
+                            :] += W[:, :, :, c] * dZ[i, h, w, c]
 
     if padding == "same":
         dA_prev = dA_prev[:, pad_h:-pad_h, pad_w:-pad_w, :]
