@@ -10,41 +10,36 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     """A function that performs back propagation over a
     convolutional layer of a neural network"""
     m, h_new, w_new, c_new = dZ.shape
-    kh, kw, c_prev, c_new = W.shape
-    sh, sw = stride
-
     m, h_prev, w_prev, c_prev = A_prev.shape
+    kh, kw, _, _ = W.shape
+    sh, sw = stride
 
     dA_prev = np.zeros_like(A_prev)
     dW = np.zeros_like(W)
     db = np.zeros_like(b)
 
-    for i in range(h_new):
-        for j in range(w_new):
-            h_start = i * sh
-            h_end = h_start + kh
-            w_start = j * sw
-            w_end = w_start + kw
+    if padding == "same":
+        pad_h = int(np.ceil((h_prev * (sh - 1) - sh + kh) / 2))
+        pad_w = int(np.ceil((w_prev * (sw - 1) - sw + kw) / 2))
+        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h), (pad_w, pad_w), (0, 0)), mode="constant")
+    else:
+        A_prev_pad = A_prev
 
-            a_slice_prev = A_prev[:, h_start:h_end, w_start:w_end, :]
+    for i in range(m):
+        for h in range(h_new):
+            for w in range(w_new):
+                for c in range(c_new):
+                    vert_start = h * sh
+                    vert_end = vert_start + kh
+                    horiz_start = w * sw
+                    horiz_end = horiz_start + kw
 
-            for c in range(c_new):
-                dA_prev[:, h_start:h_end, w_start:w_end, :] += W[:, :, :, c] *\
-                dZ[:, i, j, c]
-                dW[:, :, :, c] += np.sum(a_slice_prev *\
-                                         dZ[:, i, j, c][:, None, None, None],
-                                         axis=0)
-                db[:, :, :, c] += np.sum(dZ[:, i, j, c], axis=0)
+                    dA_prev_pad = A_prev_pad[i, vert_start:vert_end, horiz_start:horiz_end, :]
+                    dW[:, :, :, c] += dA_prev_pad * dZ[i, h, w, c]
+                    dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, :] += W[:, :, :, c] * dZ[i, h, w, c]
+                    db[:, :, :, c] += dZ[i, h, w, c]
 
     if padding == "same":
-        pad_h = max((h_prev - 1) * sh + kh - h_prev, 0)
-        pad_w = max((w_prev - 1) * sw + kw - w_prev, 0)
-        pad_top = pad_h // 2
-        pad_bottom = pad_h - pad_top
-        pad_left = pad_w // 2
-        pad_right = pad_w - pad_left
-
-        dA_prev = dA_prev[:, pad_top:h_prev - pad_bottom,
-                          pad_left:w_prev - pad_right, :]
+        dA_prev = dA_prev[:, pad_h:-pad_h, pad_w:-pad_w, :]
 
     return dA_prev, dW, db
