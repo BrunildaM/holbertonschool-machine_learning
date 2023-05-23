@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """A function that performs back propagation over a
-pooling layer of a neural network""""
+pooling layer of a neural network"""
 import numpy as np
 
 
@@ -24,10 +24,19 @@ def pool_backward(dA, A_prev, kernel_shape, stride=(1, 1), mode='max'):
                     horiz_end = horiz_start + kw
 
                     if mode == 'max':
-                        mask = A_prev[i, vert_start:vert_end, horiz_start:horiz_end, ch] == np.max(A_prev[i, vert_start:vert_end, horiz_start:horiz_end, ch])
-                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, ch] += mask * dA[i, h, w, ch]
+                        mask = A_prev[i, vert_start:vert_end,
+                                      horiz_start:horiz_end,
+                                      ch] == np.max(A_prev[i,
+                                                           vert_start:vert_end,
+                                                           horiz_start:horiz_end,
+                                                           ch])
+                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end,
+                                ch] += mask * dA[i, h, w, ch]
                     elif mode == 'avg':
-                        avg = np.mean(A_prev[i, vert_start:vert_end, horiz_start:horiz_end, ch])
-                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end, ch] += np.ones((kh, kw)) * dA[i, h, w, ch] / (kh * kw)
+                        avg = np.mean(A_prev[i, vert_start:vert_end,
+                                             horiz_start:horiz_end, ch])
+                        dA_prev[i, vert_start:vert_end, horiz_start:horiz_end,
+                                ch] += np.ones((kh, kw)) * dA[i, h, w,
+                                                              ch] / (kh * kw)
 
     return dA_prev
