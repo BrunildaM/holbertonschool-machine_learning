@@ -11,39 +11,34 @@ def conv_forward(A_prev, W, b, activation, padding="same", stride=(1, 1)):
     kh, kw, c_prev, c_new = W.shape
     sh, sw = stride
 
-    if padding == "same":
-        pad_h = int(np.ceil((h_prev - 1) / sh))
-        pad_w = int(np.ceil((w_prev - 1) / sw))
-        pad_top = pad_h // 2
-        pad_bottom = pad_h - pad_top
-        pad_left = pad_w // 2
-        pad_right = pad_w - pad_left
+    if padding == 'valid':
+        ph = 0
+        pw = 0
+    elif padding == 'same':
+        ph = (((h_prev - 1) * sh) + kh - h_prev) // 2
+        pw = (((w_prev - 1) * sw) + kw - w_prev) // 2
     else:
-        pad_top = pad_bottom = pad_left = pad_right = 0
+        return
 
-    out_h = int((h_prev - kh + pad_top + pad_bottom) / sh) + 1
-    out_w = int((w_prev - kw + pad_left + pad_right) / sw) + 1
+    images = np.pad(A_prev, ((0, 0), (ph, ph), (pw, pw), (0, 0)),
+                    'constant', constant_values=0)
 
-    if padding == "same":
-        A_prev = np.pad(A_prev, ((0, 0), (pad_top, pad_bottom),
-                                 (pad_left, pad_right), (0, 0)),
-                        mode="constant")
+    ch = (h_prev + (2 * ph) - kh) // sh + 1
+    cw = (w_prev + (2 * pw) - kw) // sw + 1
+    convoluted = np.zeros((m, ch, cw, c_new))
 
-    Z = np.zeros((m, out_h, out_w, c_new))
+    for index in range(c_new):
+        kernel_index = W[:, :, :, index]
+        i = 0
+        for h in range(0, (h_prev + (2 * ph) - kh + 1), sh):
+            j = 0
+            for w in range(0, (w_prev + (2 * pw) - kw + 1), sw):
+                output = np.sum(
+                    images[:, h:h + kh, w:w + kw, :] * kernel_index,
+                    axis=1).sum(axis=1).sum(axis=1)
+                output += b[0, 0, 0, index]
+                convoluted[:, i, j, index] = activation(output)
+                j += 1
+            i += 1
 
-    for i in range(out_h):
-        for j in range(out_w):
-            h_start = i * sh
-            h_end = h_start + kh
-            w_start = j * sw
-            w_end = w_start + kw
-
-            a_slice_prev = A_prev[:, h_start:h_end, w_start:w_end, :]
-
-            for c in range(c_new):
-                Z[:, i, j, c] = np.sum(a_slice_prev * W[:, :, :, c],
-                                       axis=(1, 2, 3))
-
-    Z += b
-    A = activation(Z)
-    return A
+    return convoluted
