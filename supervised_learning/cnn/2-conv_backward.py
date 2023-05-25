@@ -11,40 +11,39 @@ def conv_backward(dZ, A_prev, W, b, padding="same", stride=(1, 1)):
     convolutional layer of a neural network"""
     m, h_new, w_new, c_new = dZ.shape
     m, h_prev, w_prev, c_prev = A_prev.shape
-    kh, kw, _, _ = W.shape
+    kh, kw, c_prev, c_new = W.shape
     sh, sw = stride
 
-    dA_prev = np.zeros_like(A_prev)
-    dW = np.zeros_like(W)
     db = np.sum(dZ, axis=(0, 1, 2), keepdims=True)
 
-    if padding == "same":
-        pad_h = int(np.ceil((h_prev * (sh - 1) - sh + kh) / 2))
-        pad_w = int(np.ceil((w_prev * (sw - 1) - sw + kw) / 2))
-        A_prev_pad = np.pad(A_prev, ((0, 0), (pad_h, pad_h),
-                                     (pad_w, pad_w), (0, 0)),
-                            mode="constant")
+    if padding == 'valid':
+        ph = 0
+        pw = 0
+    elif padding == 'same':
+        ph = ((((h_prev - 1) * sh) + kh - h_prev) // 2) + 1
+        pw = ((((w_prev - 1) * sw) + kw - w_prev) // 2) + 1
     else:
-        A_prev_pad = A_prev
+        return
 
-    for i in range(m):
-        for h in range(h_new):
-            for w in range(w_new):
-                for c in range(c_new):
-                    vert_start = h * sh
-                    vert_end = vert_start + kh
-                    horiz_start = w * sw
-                    horiz_end = horiz_start + kw
+    padded = np.pad(A_prev, ((0, 0), (ph, ph), (pw, pw), (0, 0)),
+                    'constant', constant_values=0)
 
-                    dA_prev_pad = dA_prev[i, vert_start:vert_end,
-                                          horiz_start:horiz_end, :]
-                    dW[:, :, :, c] += A_prev_pad[i, vert_start:vert_end,
-                                                 horiz_start:horiz_end,
-                                                 :] * dZ[i, h, w, c]
-                    dA_prev[i, vert_start:vert_end, horiz_start:horiz_end,
-                            :] += W[:, :, :, c] * dZ[i, h, w, c]
+    dA_prev = np.zeros((m, h_prev + (2 * ph), w_prev + (2 * pw), c_prev))
+    dW = np.zeros((kh, kw, c_prev, c_new))
 
-    if padding == "same":
-        dA_prev = dA_prev[:, pad_h:-pad_h, pad_w:-pad_w, :]
+    for ex in range(m):
+        for kernel_index in range(c_new):
+            for h in range(h_new):
+                for w in range(w_new):
+                    i = h * sh
+                    j = w * sw
+                    dA_prev[ex, i: i + kh, j: j + kw, :] += (
+                        dZ[ex, h, w, kernel_index] * W[:, :, :, kernel_index])
+                    dW[:, :, :, kernel_index] += (
+                        padded[ex, i: i + kh, j: j + kw, :] *
+                        dZ[ex, h, w, kernel_index])
+
+    if padding == 'same':
+        dA_prev = dA_prev[:, ph:-ph, pw:-pw, :]
 
     return dA_prev, dW, db
