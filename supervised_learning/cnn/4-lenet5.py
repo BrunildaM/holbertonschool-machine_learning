@@ -5,42 +5,44 @@ import tensorflow as tf
 
 
 def lenet5(x, y):
-    """A function that builds a modified version of
-    the LeNet-5 architecture using tensorflow"""
-    initializer = tf.initializers.GlorotUniform()
+    """A function that builds a modified version of the
+    LeNet-5 architecture using tensorflow"""
+    conv1 = tf.keras.layers.Conv2D(
+        filters=6, kernel_size=5, padding='same',
+        activation='relu',
+        kernel_initializer='he_normal')(x)
 
-    conv1 = tf.layers.conv2d(x, filters=6, kernel_size=5, padding='same',
-                             activation=tf.nn.relu,
-                             kernel_initializer=initializer)
+    pool1 = tf.keras.layers.MaxPooling2D(
+        pool_size=2, strides=2)(conv1)
 
-    pool1 = tf.layers.max_pooling2d(conv1, pool_size=2, strides=2)
+    conv2 = tf.keras.layers.Conv2D(
+        filters=16, kernel_size=5, padding='valid',
+        activation='relu',
+        kernel_initializer='he_normal')(pool1)
 
-    conv2 = tf.layers.conv2d(pool1, filters=16, kernel_size=5, padding='valid',
-                             activation=tf.nn.relu,
-                             kernel_initializer=initializer)
+    pool2 = tf.keras.layers.MaxPooling2D(
+        pool_size=2, strides=2)(conv2)
 
-    pool2 = tf.layers.max_pooling2d(conv2, pool_size=2, strides=2)
+    flatten = tf.keras.layers.Flatten()(pool2)
 
-    flatten = tf.layers.flatten(pool2)
+    fc1 = tf.keras.layers.Dense(
+        120, activation='relu',
+        kernel_initializer='he_normal')(flatten)
 
-    fc1 = tf.layers.dense(flatten, units=120, activation=tf.nn.relu,
-                          kernel_initializer=initializer)
+    fc2 = tf.keras.layers.Dense(
+        84, activation='relu',
+        kernel_initializer='he_normal')(fc1)
 
-    fc2 = tf.layers.dense(fc1, units=84, activation=tf.nn.relu,
-                          kernel_initializer=initializer)
-
-    logits = tf.layers.dense(fc2, units=10, kernel_initializer=initializer)
-
-    y_pred = tf.nn.softmax(logits)
+    output = tf.keras.layers.Dense(
+        10, activation='softmax')(fc2)
 
     loss = tf.reduce_mean(
-        tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=logits)
-    )
+        tf.keras.losses.categorical_crossentropy(y, output))
 
-    correct_predictions = tf.equal(tf.argmax(y_pred, 1), tf.argmax(y, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_predictions, tf.float32))
+    accuracy = tf.reduce_mean(
+        tf.keras.metrics.categorical_accuracy(y, output))
 
-    optimizer = tf.train.AdamOptimizer()
+    optimizer = tf.keras.optimizers.Adam()
     train_op = optimizer.minimize(loss)
 
-    return y_pred, train_op, loss, accuracy
+    return output, train_op, loss, accuracy
