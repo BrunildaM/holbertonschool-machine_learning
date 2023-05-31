@@ -11,11 +11,11 @@ def identity_block(A_prev, filters):
     A_prev: output from the previous layer
     filters [tuple or list]:
     containing F11, F3, F12 respectively
-    
+
     All comvolutions inside the identity block should
     be followed by batch normalization along the channels axis
     and the ReLU activation, respectively
-    
+
     returns:
     the activated output of the identity block
     """
