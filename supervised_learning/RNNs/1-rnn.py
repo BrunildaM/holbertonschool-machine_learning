@@ -22,7 +22,7 @@ def rnn(rnn_cell, X, h_0):
     """
     t, m, i = X.shape
     m, h = h_0.shape
-    H = np.zeros((t + 1), m, h)
+    H = np.zeros((t + 1, m, h))
     H[0] = h_0
     for step in range(t):
         h_next, y = rnn_cell.forward(H[step], X[step])
@@ -33,4 +33,4 @@ def rnn(rnn_cell, X, h_0):
             Y = np.concatenate((Y, y))
     output_shape = Y.shape[-1]
     Y = Y.reshape(t, m, output_shape)
-    return(H, Y)
+    return (H, Y)
