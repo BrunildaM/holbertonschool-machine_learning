@@ -7,7 +7,7 @@ class RNNCell:
     """A class that represents a cell of a simple RNN"""
     def __init__(self, i, h, o):
         """Class constructor
-        parameters: 
+        parameters:
         i is the dimensionality of the data
         h is the dimensionality of the hidden state
         o is the dimensionality of the outputs
@@ -25,12 +25,13 @@ class RNNCell:
         softmax = e_x / e_x.sum(axis=1, keepdims=True)
         return softmax
 
-
-    def forward(self, h_prev, x_t): 
+    def forward(self, h_prev, x_t):
         """A function that performs forward propagation for one time step
-        x_t is a numpy.ndarray of shape (m, i) that contains the data input for the cell
+        x_t is a numpy.ndarray of shape (m, i)
+        that contains the data input for the cell
         m is the batche size for the data
-        h_prev is a numpy.ndarray of shape (m, h) containing the previous hidden state
+        h_prev is a numpy.ndarray of shape (m, h)
+        containing the previous hidden state
         """
         concatenation = np.concatenate((h_prev, x_t), axis=1)
         h_next = np.tanh(np.matmul(concatenation, self.Wh) + self.bh)
