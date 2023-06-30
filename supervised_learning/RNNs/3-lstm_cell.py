@@ -54,5 +54,16 @@ class LSTMCell:
             c_prev: contains previous cell state
             x_t: contains data input for the cell
         """
-        concatenation = np.concatenate((h_prev, x_t), axis=1)
-        u_gate = self.sigmoid
+        concat = np.concatenate((h_prev, x_t), axis=1)
+
+        forget_gate = self.sigmoid(np.matmul(concat, self.Wf) + self.bf)
+        update_gate = self.sigmoid(np.matmul(concat, self.Wu) + self.bu)
+        intermediate_cell_state = np.tanh(np.matmul(concat, self.Wc) + self.bc)
+        output_gate = self.sigmoid(np.matmul(concat, self.Wo) + self.bo)
+        
+        c_next = forget_gate * c_prev + update_gate * intermediate_cell_state
+        h_next = output_gate * np.tanh(c_next)
+        
+        y = self.softmax(np.matmul(h_next, self.Wy) + self.by)
+        
+        return h_next, c_next, y
