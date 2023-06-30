@@ -25,13 +25,11 @@ class GRUCell:
         self.Wh = np.random.normal(size=(h + i, h))
         self.Wy = np.random.normal(size=(h, o))
 
-
     def softmax(self, x):
         """Performs the softmax function"""
         e_x = np.exp(x - np.max(x, axis=1, keepdims=True))
         softmax = e_x / e_x.sum(axis=1, keepdims=True)
         return softmax
-
 
     def sigmoid(self, x):
         """
