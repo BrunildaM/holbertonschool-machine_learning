@@ -31,4 +31,4 @@ def deep_rnn(rnn_cells, X, h_0):
                     Y = np.concatenate((Y, y))
     output_shape = Y.shape[-1]
     Y = Y.reshape(t, m, output_shape)
-    return (H, Y)   
+    return (H, Y)
