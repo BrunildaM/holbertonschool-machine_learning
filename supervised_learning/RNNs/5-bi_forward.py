@@ -28,12 +28,13 @@ class BidirectionalCell:
         """
         Performs forward propagation for one time step
         parameters:
-        h_prev: contains previous hidden state
-        x_t: contains data input for the cell
-        m: the batch size for the data
-        h: dimensionality of hidden state
-        i: dimensionality of the data
+            h_prev: contains previous hidden state
+            x_t: contains data input for the cell
+                h: dimensionality of hidden state
+                m: the batch size for the data
+                i: dimensionality of the data
         """
         h_x = np.concatenate((h_prev, x_t), axis=1)
-        h_next = p.tanh(np.matmul(h_x, self.Whf) + self.bhf)
+        h_next = np.tanh(np.matmul(h_x, self.Whf) + self.bhf)
+
         return h_next
