@@ -22,7 +22,7 @@ class BidirectionalCell:
         self.by = np.zeros((1, o))
         self.Whf = np.random.normal(size=(h + i, h))
         self.Whb = np.random.normal(size=(h + i, h))
-        self.Wy = np.random.normal(size=((2 * h), o)
+        self.Wy = np.random.normal(size=((2 * h), o))
 
     def forward(self, h_prev, x_t):
         """
