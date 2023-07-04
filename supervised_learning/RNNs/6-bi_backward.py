@@ -9,7 +9,7 @@ class BidirectionalCell:
     """
     Represents a bidirectional RNN cell
     """
-    def __init__(self, h_prev, c_prev, x_t):
+    def __init__(self, i, h, o):
         """
         class constructor
         parameters:
@@ -27,12 +27,11 @@ class BidirectionalCell:
     def forward(self, h_prev, x_t):
         """
         Performs forward propagation for one time step
-
         parameters:
             h_prev: contains previous hidden state
             x_t: contains data input for the cell
-                m: the batch size for the data
                 h: dimensionality of hidden state
+                m: the batch size for the data
                 i: dimensionality of the data
         """
         h_x = np.concatenate((h_prev, x_t), axis=1)
