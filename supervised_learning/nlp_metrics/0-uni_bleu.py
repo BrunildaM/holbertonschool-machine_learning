@@ -1,26 +1,36 @@
 #!/usr/bin/env python3
 """A function that calculates the unigram BLEU score for a sentence"""
-from collections import Counter
+import numpy as np
 
 
 def uni_bleu(references, sentence):
     """A function that calculates the unigram BLEU score for a sentence"""
-    candidate_counts = Counter(sentence)
-    reference_counts = Counter()
-
+    unique = list(set(sentence))
+    words_dict = {}
     for reference in references:
-        reference_counts.update(reference)
+        for word in reference:
+            if word in unique:
+                if word not in words_dict.keys():
+                    words_dict[word] = reference.count(word)
+                else:
+                    actual = reference.count(word)
+                    prev = words_dict[word]
+                    words_dict[word] = max(actual, prev)
 
-    clip_count = sum(min(candidate_counts[ngram],
-                         reference_counts[ngram])
-                     for ngram in candidate_counts)
-    candidate_total = sum(candidate_counts.values())
-    reference_total = sum(reference_counts.values())
+    candidate = len(sentence)
+    prob = sum(words_dict.values()) / candidate
 
-    precision = clip_count / candidate_total if candidate_total > 0 else 0
+    best_match = []
+    for reference in references:
+        ref_len = len(reference)
+        diff = abs(ref_len - candidate)
+        best_match.append((diff, ref_len))
 
-    brevity_penalty = min(1, len(sentence) / reference_total)
-
-    bleu_score = precision * brevity_penalty
-
-    return bleu_score
+    sort_tuple = sorted(best_match, key=(lambda x: x[0]))
+    best = sort_tuple[0][1]
+    if candidate > best:
+        bleu = 1
+    else:
+        bleu = np.exp(1 - (best / candidate))
+    score = bleu * np.exp(np.log(prob))
+    return score
