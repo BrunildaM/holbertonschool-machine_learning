@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""A function that calculates the cumulative n-gram BLEU
-score for a sentence"""
+"""
+Calculates the unigram BLEU score for a sentence
+"""
 import numpy as np
 
 
@@ -23,17 +24,18 @@ def n_grams(sentence, n):
 
 
 def ngram_bleu(references, sentence, n):
-    """Calculates the unigram BLEU score for a sentence
+    """
+    Calculates the unigram BLEU score for a sentence
     references: a list of reference translations
     each reference translation is a list of the words in the translation
     sentence: a list containing the model proposed sentence
     n: the size of the n-gram to use for evaluation
     """
-    grams = list(set(n-grams(sentence, n)))
+    grams = list(set(n_grams(sentence, n)))
     len_g = len(grams)
     reference_grams = []
     words_dict = {}
-    
+
     for reference in references:
         list_grams = n_grams(reference, n)
         reference_grams.append(list_grams)
@@ -51,13 +53,14 @@ def ngram_bleu(references, sentence, n):
     prob = sum(words_dict.values()) / len_g
     return prob
 
+
 def cumulative_bleu(references, sentence, n):
     """
     Calculates the cumulative n-gram BLEU score for a sentence
     references: a list of reference translations
     each reference translation is a list of the words in the translation
     sentence: a list containing the model proposed sentence
-    n: the size of the largest n-gram to use for ebaluation
+    n: the size of the largest n-gram to use for evaluation
     """
     prob = []
     for i in range(1, n + 1):
@@ -73,6 +76,7 @@ def cumulative_bleu(references, sentence, n):
     sort_tuples = sorted(best_match_tuples, key=lambda x: x[0])
     best_match = sort_tuples[0][1]
 
+    # Brevity penalty
     if len(sentence) > best_match:
         bp = 1
     else:
