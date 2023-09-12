@@ -4,17 +4,20 @@ import numpy as np
 
 
 def pca(X, ndim):
-    """X is a numpy.ndarray of shape (n, d)
-    n: the number of data points
-    d: the number of dimensions in each point
+    """
+    a function that performs PCA on a dataset
+    X: numpy.ndarray of shape (n, d) where:
+        n is the number of data points
+        d is the number of dimensions in each point
     ndim: the new dimensionality of the transformed X
-    returns: T a numpy.ndarray of shape (n, ndim)"""
-    u, s, vh = np.linalg.svd(X)
-    cum = np.cumsum(s)
-    thresh = cum[len(cum) - 1] * var
-    mask = np.where(thresh > cum)
-    var = cum[mask]
-    idx = len(var) + 1
+    return: T, a numpy.ndarray of shape (n, ndim) containing the transformed
+    version of X
+    """
+    X_mean = X - X.mean(axis=0)
+    u, s, vh = np.linalg.svd(X_mean)
+
     W = vh.T
-    Wr = W[:, 0:idx]
-    return Wr
+    Wr = W[:, 0:ndim]
+    T = X_mean @ Wr
+
+    return T
