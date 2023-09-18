@@ -34,18 +34,13 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     if not isinstance(verbose, bool):
         return None, None, None, None
 
-    # X: array of shape (n, d) containing the data set
     n, d = X.shape
-
-    # Define pi_t, m_t, S_t: arrays containing the relevant
-    # parameters for all the clusters
     all_pis = []
     all_ms = []
     all_Ss = []
     all_lkhds = []
     all_bs = []
 
-    # Iterate over the ((kmax + 1) - kmin) clusters
     for k in range(kmin, kmax + 1):
         pi, m, S, g, lkhd = expectation_maximization(X, k, iterations,
                                                      tol, verbose)
@@ -53,9 +48,7 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         all_ms.append(m)
         all_Ss.append(S)
         all_lkhds.append(lkhd)
-        # p: the number of parameters required for the model
         p = (k * d * (d + 1) / 2) + (d * k) + (k - 1)
-        # b: array containing the BIC value for each cluster size tested
         b = p * np.log(n) - 2 * lkhd
         all_bs.append(b)
 
