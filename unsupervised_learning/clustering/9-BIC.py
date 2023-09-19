@@ -1,60 +1,55 @@
 #!/usr/bin/env python3
-"""
-A function that finds the best number of clusters for a GMM using
-the Bayesian Information Criterion
-"""
+""" BIC """
+
 import numpy as np
 expectation_maximization = __import__('8-EM').expectation_maximization
 
 
-def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
+def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5,
+        verbose=False):
+    """ Function that finds the best number of clusters for a GMM
+        using the Bayesian Information Criterion
     """
-    function that finds the best number of clusters for a GMM using
-    the Bayesian Information Criterion
-    X: is a numpy.ndarray of shape (n, d) containing the data set
-    kmin: is a positive integer containing the minimum number of clusters to check for (inclusive)
-    kmax: is a positive integer containing the maximum number of clusters to check for (inclusive)
-        If kmax is None, kmax should be set to the maximum number of clusters possible
-   iterations: is a positive integer containing the maximum number of iterations for the EM algorithm
-   tol: is a non-negative float containing the tolerance for the EM algorithm
-   verbose: is a boolean that determines if the EM algorithm should print information to the standard output
-   Returns: best_k, best_result, l, b, or None, None, None, None on failure
-    """
-
-    if not isinstance(X, np.ndarray) or X.ndim != 2:
+    if type(X) != np.ndarray or len(X.shape) != 2:
         return None, None, None, None
-    if not isinstance(kmin, int) or kmin <= 0 or X.shape[0] <= kmin:
+    if type(kmin) != int or kmin < 1:
         return None, None, None, None
-    if not isinstance(kmax, int) or kmax <= 0 or X.shape[0] <= kmax:
+    if kmax is None:
+        kmax = X.shape[0]
+    if type(kmax) != int or kmax < 1:
         return None, None, None, None
-    if not isinstance(iterations, int) or iterations <= 0:
+    if kmax <= kmin:
         return None, None, None, None
-    if not isinstance(tol, float) or tol < 0:
+    if type(iterations) != int or iterations < 1:
         return None, None, None, None
-    if not isinstance(verbose, bool):
+    if type(tol) != float or tol < 0:
+        return None, None, None, None
+    if type(verbose) != bool:
         return None, None, None, None
 
     n, d = X.shape
-    all_pis = []
-    all_ms = []
-    all_Ss = []
-    all_lkhds = []
-    all_bs = []
+    k_values_list = []
+    results_list = []
+    log_likelihood_list = []
+    bic_value_list = []
 
     for k in range(kmin, kmax + 1):
-        pi, m, S, g, lkhd = expectation_maximization(X, k, iterations,
-                                                     tol, verbose)
-        all_pis.append(pi)
-        all_ms.append(m)
-        all_Ss.append(S)
-        all_lkhds.append(lkhd)
-        p = (k * d * (d + 1) / 2) + (d * k) + (k - 1)
-        b = p * np.log(n) - 2 * lkhd
-        all_bs.append(b)
+        pi, m, S, _, log_likelihood = expectation_maximization(
+            X, k, iterations, tol, verbose)
 
-    all_lkhds = np.array(all_lkhds)
-    all_bs = np.array(all_bs)
-    best_k = np.argmin(all_bs)
-    best_result = (all_pis[best_k], all_ms[best_k], all_Ss[best_k])
+        p = d * k + (d * k * (d + 1) / 2) + k - 1
+        BIC = p * np.log(n) - 2 * log_likelihood
 
-    return best_k+1, best_result, all_lkhds, all_bs
+        k_values_list.append(k)
+        results_list.append((pi, m, S))
+        log_likelihood_list.append(log_likelihood)
+        bic_value_list.append(BIC)
+
+        log_likelihood_array = np.array(log_likelihood_list)
+        bic_value_array = np.array(bic_value_list)
+        index = np.argmin(bic_value_array)
+
+        best_k = k_values_list[index]
+        best_result = results_list[index]
+
+    return best_k, best_result, log_likelihood_array, bic_value_array
