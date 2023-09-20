@@ -1,55 +1,51 @@
 #!/usr/bin/env python3
-""" BIC """
-
+""" Bayesian Information Criterion """
 import numpy as np
-expectation_maximization = __import__('8-EM').expectation_maximization
 
 
-def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5,
-        verbose=False):
-    """ Function that finds the best number of clusters for a GMM
-        using the Bayesian Information Criterion
+def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     """
-    if type(X) != np.ndarray or len(X.shape) != 2:
+    BIC function
+    """
+    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
         return None, None, None, None
-    if type(kmin) != int or kmin < 1:
+    if type(kmin) != int or kmin <= 0 or kmin >= X.shape[0]:
         return None, None, None, None
-    if kmax is None:
-        kmax = X.shape[0]
-    if type(kmax) != int or kmax < 1:
+    if type(kmax) != int or kmax <= 0 or kmax >= X.shape[0]:
         return None, None, None, None
-    if kmax <= kmin:
+    if kmin >= kmax:
         return None, None, None, None
-    if type(iterations) != int or iterations < 1:
+    if type(iterations) != int or iterations <= 0:
         return None, None, None, None
-    if type(tol) != float or tol < 0:
+    if type(tol) != float or tol <= 0:
         return None, None, None, None
     if type(verbose) != bool:
         return None, None, None, None
 
+    k_best = []
+    best_res = []
+    logl_val = []
+    bic_val = []
     n, d = X.shape
-    k_values_list = []
-    results_list = []
-    log_likelihood_list = []
-    bic_value_list = []
-
     for k in range(kmin, kmax + 1):
-        pi, m, S, _, log_likelihood = expectation_maximization(
-            X, k, iterations, tol, verbose)
+        pi, m, S,  _, log_l = expectation_maximization(X, k, iterations, tol,
+                                                       verbose)
+        k_best.append(k)
+        best_res.append((pi, m, S))
+        logl_val.append(log_l)
 
-        p = d * k + (d * k * (d + 1) / 2) + k - 1
-        BIC = p * np.log(n) - 2 * log_likelihood
+        cov_params = k * d * (d + 1) / 2.
+        mean_params = k * d
+        p = int(cov_params + mean_params + k - 1)
 
-        k_values_list.append(k)
-        results_list.append((pi, m, S))
-        log_likelihood_list.append(log_likelihood)
-        bic_value_list.append(BIC)
+        bic = p * np.log(n) - 2 * log_l
+        bic_val.append(bic)
 
-        log_likelihood_array = np.array(log_likelihood_list)
-        bic_value_array = np.array(bic_value_list)
-        index = np.argmin(bic_value_array)
+    bic_val = np.array(bic_val)
+    logl_val = np.array(logl_val)
+    best_val = np.argmin(bic_val)
 
-        best_k = k_values_list[index]
-        best_result = results_list[index]
+    k_best = k_best[best_val]
+    best_res = best_res[best_val]
 
-    return best_k, best_result, log_likelihood_array, bic_value_array
+    return k_best, best_res, logl_val, bic_val
