@@ -31,7 +31,7 @@ def markov_chain(P, s, t=1):
         return None
     if len(s.shape) != 2 or s.shape[0] != 1 or s.shape[1] != n:
         return None
- 
+
     sum_test = np.sum(P, axis=1)
     for elem in sum_test:
         if not np.isclose(elem, 1):
