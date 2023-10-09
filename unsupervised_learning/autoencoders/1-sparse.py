@@ -2,7 +2,7 @@
 """
 A function that creates a sparse autoencoder
 """
-import tensorflow as tf
+import tensorflow.keras as keras
 
 
 def autoencoder(input_dims, hidden_layers, latent_dims, lambtha):
