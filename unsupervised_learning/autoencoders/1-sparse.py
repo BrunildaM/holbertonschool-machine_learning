@@ -2,7 +2,6 @@
 """
 A function that creates a sparse autoencoder
 """
-import numpy as np
 import tensorflow as tf
 
 
